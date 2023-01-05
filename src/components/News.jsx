@@ -20,7 +20,7 @@ export default class News extends Component {
         let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         let newsData = await fetch(url);
         let parseData = await newsData.json();
-        this.setState({ article: parseData.articles, totalResults: this.props.totalResults });
+        this.setState({ article: parseData.articles, totalResults: parseData.totalResults });
     }
 
 
@@ -37,11 +37,10 @@ export default class News extends Component {
         }
 
         const nextNews = async () => {
-            let NewPage = this.state.page + 1;
-            if (NewPage > Math.ceil(this.state.totalResults / this.props.pageSize)) {
-
-            } else {
-                let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${NewPage}&pageSize=${this.props.pageSize}`;
+            let totalPage = Math.ceil(this.state.totalResults / this.props.pageSize);
+            let newPage = this.state.page + 1;
+            if (newPage <= totalPage) {
+                let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${newPage}&pageSize=${this.props.pageSize}`;
                 let newsData = await fetch(url);
                 let parseData = await newsData.json();
                 this.setState({
@@ -49,18 +48,14 @@ export default class News extends Component {
                     page: this.state.page + 1
                 });
             }
-
-
         }
 
         return (
             <>
-                {/* {console.log(this.state.article)} */}
                 <div div className="container" >
                     <div className="row">
                         {
                             this.state.article.length > 0 && this.state.article.map((ele, index) => {
-                                // {console.log(ele.title)}
                                 return <div className="col-md-4" key={index}>
                                     <Newsitem title={ele.title?.split(' ').slice(0, 8).join(' ')} description={ele.description?.split(' ').slice(0, 8).join(' ')} newsUrl={ele.url} imageUrl={ele.urlToImage} />
                                 </div>
@@ -70,7 +65,7 @@ export default class News extends Component {
 
                     <div style={{ marginTop: "10px" }}>
                         <button disabled={this.state.page <= 1 ? "disabled" : ''} className='btn btn-dark' onClick={prevNews} > Prev </button>
-                        <button disabled={this.state.page + 1 > (this.state.totalResults / this.state.pageSize) ? "disabled" : ""} className='btn btn-dark' style={{ float: "right" }} onClick={nextNews} > Next </button>
+                        <button disabled={this.state.page + 1 > (Math.ceil(this.state.totalResults / this.props.pageSize)) ? "disabled" : ""} className='btn btn-dark' style={{ float: "right" }} onClick={nextNews} > Next </button>
                     </div>
                 </div>
             </>
