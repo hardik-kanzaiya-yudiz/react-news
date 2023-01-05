@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Newsitem from './Newsitem'
+import Spinner from './Spinner';
 
 export default class News extends Component {
     // articals = ;
@@ -17,35 +18,40 @@ export default class News extends Component {
     //this function is called after the reder method is called 
     async componentDidMount() {
         // console.log(this.parseData);
-        let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+        this.setState({ loading: true });
+        let url = `https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         let newsData = await fetch(url);
         let parseData = await newsData.json();
-        this.setState({ article: parseData.articles, totalResults: parseData.totalResults });
+        this.setState({ article: parseData.articles, totalResults: parseData.totalResults, loading: false });
     }
 
 
     render() {
         const prevNews = async () => {
             let prevPage = this.state.page - 1;
-            let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${prevPage}&pageSize=${this.props.pageSize}`;
+            this.setState({ loading: true });
+            let url = `https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${prevPage}&pageSize=${this.props.pageSize}`;
             let newsData = await fetch(url);
             let parseData = await newsData.json();
             this.setState({
                 article: parseData.articles,
-                page: this.state.page - 1
+                page: this.state.page - 1,
+                loading: false,
             });
         }
 
         const nextNews = async () => {
             let totalPage = Math.ceil(this.state.totalResults / this.props.pageSize);
             let newPage = this.state.page + 1;
+            this.setState({ loading: true });
             if (newPage <= totalPage) {
-                let url = `https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${newPage}&pageSize=${this.props.pageSize}`;
+                let url = `https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${newPage}&pageSize=${this.props.pageSize}`;
                 let newsData = await fetch(url);
                 let parseData = await newsData.json();
                 this.setState({
                     article: parseData.articles,
-                    page: this.state.page + 1
+                    page: this.state.page + 1,
+                    loading: false,
                 });
             }
         }
@@ -53,7 +59,9 @@ export default class News extends Component {
         return (
             <>
                 <div div className="container" >
-                    <div className="row">
+                    <h1 className='text-center'> All News </h1>
+                    {this.state.loading && <Spinner />}
+                    {!this.state.loading && <div className="row">
                         {
                             this.state.article.length > 0 && this.state.article.map((ele, index) => {
                                 return <div className="col-md-4" key={index}>
@@ -61,7 +69,8 @@ export default class News extends Component {
                                 </div>
                             })
                         }
-                    </div>
+                    </div>}
+
 
                     <div style={{ marginTop: "10px" }}>
                         <button disabled={this.state.page <= 1 ? "disabled" : ''} className='btn btn-dark' onClick={prevNews} > Prev </button>
