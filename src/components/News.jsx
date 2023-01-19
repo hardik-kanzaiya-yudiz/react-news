@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
+import Navbar from './Navbar';
 import Newsitem from './Newsitem'
 import Spinner from './Spinner';
 
 export default class News extends Component {
-    // articals = ;
     //when we create the constructor in class based so super() keywork is always writer
     //constructor is automatically call when we create the object of the class 
     constructor() {
@@ -17,7 +17,7 @@ export default class News extends Component {
 
     //this function is called after the reder method is called 
     async componentDidMount() {
-        // console.log(this.parseData);
+        // console.log("hii hardik");
         this.setState({ loading: true });
         let url = `https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&apiKey=f7881dbb419843beb3b83e66b1b77d22&page=${this.state.page}&pageSize=${this.props.pageSize}`;
         let newsData = await fetch(url);
@@ -27,6 +27,9 @@ export default class News extends Component {
 
 
     render() {
+        // {console.log("hii hardik")}; 
+        // { console.log(this.props.category) }
+        <Navbar />
         const prevNews = async () => {
             let prevPage = this.state.page - 1;
             this.setState({ loading: true });
@@ -41,6 +44,7 @@ export default class News extends Component {
         }
 
         const nextNews = async () => {
+            // console.log(this.props.category);
             let totalPage = Math.ceil(this.state.totalResults / this.props.pageSize);
             let newPage = this.state.page + 1;
             this.setState({ loading: true });
