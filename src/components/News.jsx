@@ -29,7 +29,6 @@ export default class News extends Component {
     render() {
         // {console.log("hii hardik")}; 
         // { console.log(this.props.category) }
-        <Navbar />
         const prevNews = async () => {
             let prevPage = this.state.page - 1;
             this.setState({ loading: true });
@@ -62,6 +61,9 @@ export default class News extends Component {
 
         return (
             <>
+            {/* {
+                console.log("hiii iiiiid")
+            } */}
                 <div div className="container" >
                     <h1 className='text-center'> All News </h1>
                     {this.state.loading && <Spinner />}
